@@ -5,6 +5,7 @@ from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from predictor import Darknet
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
@@ -14,6 +15,7 @@ class Thread(QThread):
         while True:
             ret, frame = cap.read()
             if ret:
+                print(darknet.predict(frame))
                 # https://stackoverflow.com/a/55468544/6622587
                 Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 FlippedImage = cv2.flip(Image, 1)
@@ -110,5 +112,6 @@ class App(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    darknet = Darknet(1280, 720)
     ex = App()
     sys.exit(app.exec_())
