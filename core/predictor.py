@@ -34,7 +34,7 @@ def cvDrawBoxes(detections, img):
         'keyboard' : [33, 154, 135],'cell phone' : [206, 209, 108],'microwave' : [206, 209, 108],'oven' : [97, 246, 15],
         'toaster' : [147, 140, 184],'sink' : [157, 58, 24],'refrigerator' : [117, 145, 137],'book' : [155, 129, 244],
         'clock' : [53, 61, 6],'vase' : [145, 75, 152],'scissors' : [8, 140, 38],'teddy bear' : [37, 61, 220],
-        'hair drier' : [129, 12, 229],'toothbrush' : [11, 126, 158]
+        'hair drier' : [129, 12, 229],'toothbrush' : [11, 126, 158], "with_mask": [0, 255, 255], "without_mask": [156, 116, 171]
     }
     
 
@@ -64,14 +64,14 @@ class Darknet:
 
     def __init__(self, frame_width, frame_height):
         # load pretrained model 
-        configPath = "./cfg/yolov4.cfg"
-        weightPath = "./yolov4.weights"
-        metaPath = "./cfg/coco.data"
+        # configPath = "./cfg/yolov4.cfg"
+        # weightPath = "./yolov4.weights"
+        # metaPath = "./cfg/coco.data"
 
         # custom trained models
-        # configPath = "./cfg/yolov4-tiny-custom-mask.cfg"                                 # Path to cfg
-        # weightPath = "./mask.weights"                                 # Path to weights
-        # metaPath = "./cfg/mask.data" 
+        configPath = "./cfg/yolov4-tiny-custom-mask.cfg"                                 # Path to cfg
+        weightPath = "./mask.weights"                                 # Path to weights
+        metaPath = "./cfg/mask.data" 
 
         if not os.path.exists(configPath):                              # Checks whether file exists otherwise return ValueError
             raise ValueError("Invalid config path `" +
@@ -97,6 +97,7 @@ class Darknet:
         darknet.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
 
         detections = darknet.detect_image(self.network, self.class_names, self.darknet_image, thresh=0.25)
+        print(detections)
 
         return cvDrawBoxes(detections, frame_resized)
 
