@@ -63,6 +63,46 @@ class App(QWidget):
         self.button_two.move(550, 770)
         self.button_two.resize(200, 60)
 
+        # Label One
+        label_font = QtGui.QFont()
+        label_font.setPointSize(20)
+        self.stat_one = QtWidgets.QLabel(self)
+        self.stat_one.setFont(label_font)
+        self.stat_one.setObjectName("stat_one")
+        self.stat_one.setText("<stat one>:")
+        self.stat_one.move(1020, 70)
+        self.stat_one.resize(200, 50)
+
+        # Value one
+        label_font = QtGui.QFont()
+        label_font.setPointSize(25)
+        self.stat_one_value = QtWidgets.QLabel(self)
+        self.stat_one_value.setFont(label_font)
+        self.stat_one_value.setObjectName("stat_one_value")
+        self.stat_one_value.setText("*value*")
+        self.stat_one_value.move(1070, 120)
+        self.stat_one_value.resize(200, 50)
+
+        # Label Two
+        label_font = QtGui.QFont()
+        label_font.setPointSize(20)
+        self.stat_two = QtWidgets.QLabel(self)
+        self.stat_two.setFont(label_font)
+        self.stat_two.setObjectName("stat_two")
+        self.stat_two.setText("<stat two>:")
+        self.stat_two.move(1020, 200)
+        self.stat_two.resize(200, 50)
+
+        # Value one
+        label_font = QtGui.QFont()
+        label_font.setPointSize(25)
+        self.stat_two_value = QtWidgets.QLabel(self)
+        self.stat_two_value.setFont(label_font)
+        self.stat_two_value.setObjectName("stat_two_value")
+        self.stat_two_value.setText("*value*")
+        self.stat_two_value.move(1070, 250)
+        self.stat_two_value.resize(200, 50)
+
 
 
         self.show()
