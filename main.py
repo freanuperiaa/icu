@@ -25,7 +25,8 @@ class Thread(QThread):
                 # print(detections)
                 if checker.has_been_a_second():
                     if check_if_violates_any(detections):
-                        playsound('./sound_assets/alarm_one.wav', block=True)
+                        print("violation!")
+                        playsound('./sound_assets/alarm_one_onesec.wav', block=False)
                 ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
                 Pic = ConvertToQtFormat.scaled(1024, 768)
                 self.changePixmap.emit(Pic)
