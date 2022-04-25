@@ -5,7 +5,7 @@ from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
 from playsound import playsound
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia
 from predictor import Darknet
 from utils import sound_signal, check_if_violates_any, TimeForSoundChecker
 
@@ -16,6 +16,14 @@ class Thread(QThread):
     def run(self):
         checker = TimeForSoundChecker()
         cap = cv2.VideoCapture(0)
+
+        # https://www.tutorialexample.com/python-pyqt5-play-wav-file-a-completed-guide-pyqt-tutorial/
+        url = QtCore.QUrl.fromLocalFile('./sound_assets/alarm_one.wav')
+        content = QtMultimedia.QMediaContent(url)
+        player = QtMultimedia.QMediaPlayer()
+        player.setMedia(content)
+        player.setVolume(50.0)
+
         while True:
             ret, frame = cap.read()
             if ret:
@@ -25,8 +33,7 @@ class Thread(QThread):
                 # print(detections)
                 if checker.has_been_a_second():
                     if check_if_violates_any(detections):
-                        print("violation!")
-                        playsound('./sound_assets/alarm_one_onesec.wav', block=False)
+                        player.play()
                 ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
                 Pic = ConvertToQtFormat.scaled(1024, 768)
                 self.changePixmap.emit(Pic)
