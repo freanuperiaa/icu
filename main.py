@@ -3,22 +3,30 @@ import sys
 from PyQt5.QtWidgets import  QWidget, QLabel, QApplication
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
+from playsound import playsound
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from predictor import Darknet
+from utils import sound_signal, check_if_violates_any, TimeForSoundChecker
+
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
 
     def run(self):
+        checker = TimeForSoundChecker()
         cap = cv2.VideoCapture(0)
         while True:
             ret, frame = cap.read()
             if ret:
                 # https://stackoverflow.com/a/55468544/6622587
                 img = cv2.flip(frame, 1)
-                Image = darknet.predict(img)
-                ConvertToQtFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
+                image, detections = darknet.predict(img)
+                # print(detections)
+                if checker.has_been_a_second():
+                    if check_if_violates_any(detections):
+                        playsound('./sound_assets/alarm_one.wav', block=True)
+                ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
                 Pic = ConvertToQtFormat.scaled(1024, 768)
                 self.changePixmap.emit(Pic)
 

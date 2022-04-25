@@ -97,7 +97,7 @@ class Darknet:
         darknet.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
 
         detections = darknet.detect_image(self.network, self.class_names, self.darknet_image, thresh=0.25)
-        print(detections)
+        frame_with_detections = cvDrawBoxes(detections, frame_resized)
 
-        return cvDrawBoxes(detections, frame_resized)
+        return frame_with_detections, detections
 
