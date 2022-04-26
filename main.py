@@ -7,11 +7,13 @@ from playsound import playsound
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia
 from predictor import Darknet
-from utils import sound_signal, check_if_violates_any, TimeForSoundChecker
+from utils import count_nomask_violations, sound_signal, check_if_violates_any, TimeForSoundChecker
 
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
+
+    changeNumNoMasks = pyqtSignal(str)
 
     def run(self):
         checker = TimeForSoundChecker()
@@ -30,13 +32,14 @@ class Thread(QThread):
                 # https://stackoverflow.com/a/55468544/6622587
                 img = cv2.flip(frame, 1)
                 image, detections = darknet.predict(img)
-                # print(detections)
+                num_no_masks = count_nomask_violations(detections)
                 if checker.has_been_a_second():
                     if check_if_violates_any(detections):
                         player.play()
                 ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
                 Pic = ConvertToQtFormat.scaled(1024, 768)
                 self.changePixmap.emit(Pic)
+                self.changeNumNoMasks.emit(num_no_masks)
 
 
 class App(QWidget):
@@ -54,6 +57,10 @@ class App(QWidget):
     def setImage(self, image):
         self.label.setPixmap(QPixmap.fromImage(image))
 
+    @pyqtSlot(str)
+    def setNumNomasks(self, num_no_masks):
+        self.stat_one_value.setText(num_no_masks)
+
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -62,9 +69,6 @@ class App(QWidget):
         self.label = QLabel(self)
         self.label.move(30, 30)
         self.label.resize(1280, 720)
-        th = Thread(self)
-        th.changePixmap.connect(self.setImage)
-        th.start()
 
         # Button One
         self.button_one = QtWidgets.QPushButton(self)
@@ -86,7 +90,7 @@ class App(QWidget):
         self.stat_one = QtWidgets.QLabel(self)
         self.stat_one.setFont(label_font)
         self.stat_one.setObjectName("stat_one")
-        self.stat_one.setText("<stat one>:")
+        self.stat_one.setText("No face masks:")
         self.stat_one.move(1100, 70)
         self.stat_one.resize(200, 50)
 
@@ -96,7 +100,7 @@ class App(QWidget):
         self.stat_one_value = QtWidgets.QLabel(self)
         self.stat_one_value.setFont(label_font)
         self.stat_one_value.setObjectName("stat_one_value")
-        self.stat_one_value.setText("*value*")
+        self.stat_one_value.setText("")
         self.stat_one_value.move(1150, 120)
         self.stat_one_value.resize(200, 50)
 
@@ -120,8 +124,11 @@ class App(QWidget):
         self.stat_two_value.move(1150, 250)
         self.stat_two_value.resize(200, 50)
 
-
-
+        # Connection to threads
+        th = Thread(self)
+        th.changePixmap.connect(self.setImage)
+        th.changeNumNoMasks.connect(self.setNumNomasks)
+        th.start()
         self.show()
 
 

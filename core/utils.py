@@ -16,6 +16,12 @@ def check_if_violates_any(predictions):
             return True
     return False
 
+def count_nomask_violations(predictions):
+    num_instances = 0
+    for prediction in predictions:
+        if prediction[0] == 'without_mask':
+            num_instances += 1
+    return str(num_instances)
 
 class TimeForSoundChecker:
 
