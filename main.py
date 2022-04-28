@@ -19,7 +19,11 @@ class Thread(QThread):
 
     def run(self):
         checker = TimeForSoundChecker()
+
+        # from camera
         cap = cv2.VideoCapture(0)
+        # from video
+        # cap = cv2.VideoCapture("crowd.mp4")
 
         # https://www.tutorialexample.com/python-pyqt5-play-wav-file-a-completed-guide-pyqt-tutorial/
         url = QtCore.QUrl.fromLocalFile('./sound_assets/alarm_one.wav')
@@ -32,8 +36,7 @@ class Thread(QThread):
             ret, frame = cap.read()
             if ret:
                 # https://stackoverflow.com/a/55468544/6622587
-                img = cv2.flip(frame, 1)
-                image, detections = darknet.predict(img)
+                image, detections = darknet.predict(frame)
                 num_no_masks = count_nomask_violations(detections)
                 num_no_shields = count_noshields_violations(detections)
                 if checker.has_been_a_second():
