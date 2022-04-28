@@ -21,16 +21,16 @@ class Thread(QThread):
         checker = TimeForSoundChecker()
 
         # from camera
-        cap = cv2.VideoCapture(0)
+        # cap = cv2.VideoCapture(0)
         # from video
-        # cap = cv2.VideoCapture("crowd.mp4")
+        cap = cv2.VideoCapture("crowd.mp4")
 
         # https://www.tutorialexample.com/python-pyqt5-play-wav-file-a-completed-guide-pyqt-tutorial/
         url = QtCore.QUrl.fromLocalFile('./sound_assets/alarm_one.wav')
         content = QtMultimedia.QMediaContent(url)
         player = QtMultimedia.QMediaPlayer()
         player.setMedia(content)
-        player.setVolume(50.0)
+        player.setVolume(50)
 
         while True:
             ret, frame = cap.read()
