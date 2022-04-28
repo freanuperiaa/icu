@@ -2,7 +2,8 @@ import time
 from playsound import playsound
 
 VIOLATION_CLASSES = [ # to be updated if meron nang other classes\
-    'without_mask'
+    'no face_shield',
+    "no face_mask"
 ]
 
 
@@ -19,7 +20,14 @@ def check_if_violates_any(predictions):
 def count_nomask_violations(predictions):
     num_instances = 0
     for prediction in predictions:
-        if prediction[0] == 'without_mask':
+        if prediction[0] == 'no face_mask':
+            num_instances += 1
+    return str(num_instances)
+
+def count_noshields_violations(predictions):
+    num_instances = 0
+    for prediction in predictions:
+        if prediction[0] == 'no face_shield':
             num_instances += 1
     return str(num_instances)
 

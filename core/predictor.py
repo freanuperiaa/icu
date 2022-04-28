@@ -59,7 +59,10 @@ class Darknet:
         metaPath = "./cw/obj.data"
 
         # files for pretrained model
-        
+        # change directories below accordingly
+        configPath2 = "./cfg/yolov4-tiny-3l.cfg"
+        weightPath2 = "./cw/yolov4-tiny.weights"
+        metaPath2 = "./cfg/coco.data"
 
 
         if not os.path.exists(configPath):                              # Checks whether file exists otherwise return ValueError
@@ -71,10 +74,23 @@ class Darknet:
         if not os.path.exists(metaPath):
             raise ValueError("Invalid data file path `" +
                             os.path.abspath(metaPath)+"`")
+        if not os.path.exists(configPath2):
+            raise ValueError("Invalid config path `" +
+                            os.path.abspath(configPath)+"`")
+        if not os.path.exists(weightPath2):
+            raise ValueError("Invalid weight path `" +
+                            os.path.abspath(weightPath)+"`")
+        if not os.path.exists(metaPath2):
+            raise ValueError("Invalid data file path `" +
+                            os.path.abspath(metaPath)+"`")
 
-        network, class_names, class_colors = darknet.load_network(configPath,  metaPath, weightPath, batch_size=1)
+        network, class_names, class_colors = darknet.load_network(configPath, metaPath, weightPath, batch_size=1)
         self.network = network
         self.class_names = class_names
+
+        network, class_names, class_colors = darknet.load_network(configPath2, metaPath2, weightPath2, batch_size=1)
+        self.network_pretrained = network
+        self.class_names_extended = class_names
 
     def predict(self, image):
         frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -84,5 +100,7 @@ class Darknet:
         detections = darknet.detect_image(self.network, self.class_names, self.darknet_image, thresh=0.25)
         frame_with_detections = cvDrawBoxes(detections, frame_resized)
 
+        # preds = darknet.detect_image(self.network_pretrained, self.class_names_extended, self.darknet_image, thresh=0.25)
+        # print(preds)
         return frame_with_detections, detections
 
