@@ -61,7 +61,7 @@ def cvDrawBoxesSocDis(detections, img):
         objectId = 0								# We inialize a variable called ObjectId and set it to 0
         for detection in detections:				# In this if statement, we filter all the detections for persons only
             # Check for the only person name tag 
-            name_tag = str(detection[0].decode())   # Coco file has string of all the names
+            name_tag = str(detection[0])   # Coco file has string of all the names
             if name_tag == 'person':                
                 x, y, w, h = detection[2][0],\
                             detection[2][1],\
