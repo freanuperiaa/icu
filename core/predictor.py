@@ -181,11 +181,11 @@ class Darknet:
         darknet.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
 
         detections = darknet.detect_image(self.network, self.class_names, self.darknet_image, thresh=0.25)
+        persons_detections = darknet.detect_image(self.network_pretrained, self.class_names_extended, self.darknet_image, thresh=0.25)
         frame_with_detections = cvDrawBoxes(detections, frame_resized)
 
-        img = cvDrawBoxesSocDis(detections, frame_with_detections)
+        img = cvDrawBoxesSocDis(persons_detections, frame_with_detections)
 
-        # preds = darknet.detect_image(self.network_pretrained, self.class_names_extended, self.darknet_image, thresh=0.25)
-        # print(preds)
+        # no need to return yung person detections kasi naka draw na sa frame
         return img, detections
 
