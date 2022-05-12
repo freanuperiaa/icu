@@ -53,7 +53,7 @@ def cvDrawBoxes(detections, img):
                 pt2 = (xmax, ymax)
                 cv2.rectangle(img, pt1, pt2, color, 1)
                 cv2.putText(img,
-                            detections[0][0] +
+                            name_key +
                             " [" + str((confidence * 100, 2))[2:7] + "]",
                             (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             color, 2)
